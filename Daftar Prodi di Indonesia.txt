@@ -1,0 +1,175 @@
+1. Matematika
+2. Fisika
+3. Biologi
+4. Kimia
+5. Statistika
+6. Aktuaria
+7. Meteorologi
+8. Astronomi
+9. Geofisika
+10. Geologi
+11. Ilmu Kedokteran
+12. Pendidikan Dokter
+13. Kedokteran Gigi
+14. Kedokteran Hewan
+15. Gizi
+16. Ilmu Keperawatan
+17. Apoteker
+18. Kebidanan
+19. Kesehatan Lingkungan
+20. Keselamatan dan Kesehatan Kerja
+21. Kesehatan Masyarakat
+22. Farmasi/Ilmu Farmasi
+23. Teknik Elektro
+24. Teknik Sipil
+25. Teknik Listrik
+26. Teknik Bangunan
+27. Teknik Biomedis
+28. Teknik Geodesi
+29. Teknik Geologi
+30. Teknik Kimia
+31. Pendidikan Teknologi Agroindustri
+32. Teknik Lingkungan
+33. Teknik Mesin
+34. Teknik Perkapalan
+35. Teknik Nuklir
+36. Rekayasa Keselamatan Kebakaran
+37. Teknologi Bioproses
+38. Teknik Informatika
+39. Teknik Industri
+40. Teknik Pertambangan
+41. Teknik Perminyakan
+42. Teknik Material
+43. Teknik Geodesi dan Geomatika
+44. Teknik Dirgantara/Penerbangan
+45. Teknik Metalurgi
+46. Ilmu Komputer
+47. Teknologi Informasi
+48. Sistem Informasi
+49. Teknik Komputer
+50. Arsitektur
+51. Perencanaan Wilayah dan Kota
+52. Teknik Pengairan
+53. Arsitektur Interior
+54. Kehutanan
+55. Agronomi
+56. Akuakultur
+57. Teknik Pertanian
+58. Teknologi Pangan
+59. Teknologi Industri Pertanian
+60. Pertanian dan Agribisnis
+61. Agribisnis
+62. Peternakan
+63. Ilmu Kelautan
+64. Ilmu Perikanan/Teknologi Perikanan
+65. Agrobisnis Perikanan
+66. Bioteknologi
+67. Agriekoteknologi
+68. Ilmu Keolahragaan
+69. Hubungan Internasional
+70. Ilmu Politik
+71. Ilmu Pemerintahan
+72. Kriminologi
+73. Sosiologi
+74. Ilmu Administrasi Negara
+75. Ilmu Administrasi Niaga
+76. Ilmu Administrasi Fiskal
+77. Administrasi Bisnis/Tata Niaga
+78. Administrasi Publik
+79. Administrasi Pemerintahan
+80. Antropologi Sosial/Antropologi Budaya
+81. Arkeologi
+82. Sejarah
+83. Ilmu Komunikasi
+84. Ilmu Perpustakaan
+85. Kearsipan Digital
+86. Jurnalistik
+87. Hubungan Masyarakat
+88. TV dan Film
+89. Manajemen Komunikasi
+90. Bahasa dan Kebudayaan Korea
+91. Bahasa dan Budaya Tiongkok
+92. Sastra Belanda
+93. Sastra Cina
+94. Sastra Indonesia
+95. Sastra Jawa/Sunda/Daerah
+96. Sastra Jepang
+97. Sastra Jerman
+98. Sastra Inggris
+99. Sastra Prancis
+100. Sastra Rusia/Slavia
+101. Sastra Arab
+102. Sejarah dan Kebudayaan Islam
+103. Ilmu Filsafat
+104. Ilmu Ekonomi
+105. Ekonomi Pembangunan
+106. Manajemen
+107. Manajemen Bisnis
+108. Akuntansi
+109. Ilmu Ekonomi Islam
+110. Bisnis Islam
+111. Bisnis Digital
+112. Bisnis Internasional
+113. Keuangan dan Perbankan
+114. Kewirausahaan
+115. Ilmu Hukum
+116. Psikologi
+117. Geografi
+118. Ilmu Kesejahteraan Sosial
+119. Studi Agama
+120. Peradilan Agama
+121. Politik Islam
+122. Teologi
+123. Pariwisata
+124. Perhotelan
+125. Teknologi Pendidikan
+126. Administrasi Pendidikan
+127. Manajemen Pendidikan
+128. Psikologi Pendidikan dan Bimbingan
+129. Pendidikan Masyarakat
+130. Pendidikan Khusus
+131. Bimbingan dan Konseling
+132. Perpustakaan & Sains Informasi
+133. Pendidikan Guru Sekolah Dasar (PGSD)
+134. Pendidikan Guru Anak Usia Dini (PAUD)
+135. Pendidikan Luar Sekolah (PLS)
+136. Pendidikan Luar Biasa
+137. Pendidikan Bahasa Indonesia
+138. Pendidikan Bahasa Daerah
+139. Pendidikan Bahasa Inggris
+140. Pendidikan Bahasa Arab
+141. Pendidikan Bahasa Jepang
+142. Pendidikan Bahasa Jerman
+143. Pendidikan Bahasa Prancis
+144. Pendidikan Bahasa Korea
+145. Pendidikan Pancasila dan Kewarganegaraan
+146. Pendidikan Sejarah
+147. Pendidikan Geografi
+148. Pendidikan Sosiologi
+149. Pendidikan IPS
+150. Pendidikan Agama Islam
+151. Manajemen Pemasaran Pariwisata
+152. Pendidikan Matematika
+153. Pendidikan Fisika
+154. Pendidikan Biologi
+155. Pendidikan Kimia
+156. Pendidikan IPA
+157. Pendidikan Ilmu Komputer
+158. Pendidikan Seni Rupa
+159. Pendidikan Seni Tari
+160. Pendidikan Seni Musik
+161. Pendidikan Kepelatihan Olahraga
+162. Pendidikan Jasmani, Kesehatan, dan Rekreasi
+163. Pendidikan Teknik Otomotif
+164. Seni Rupa Murni
+165. Seni Kriya
+166. Seni Tari
+167. Seni Musik
+168. Desain dan Komunikasi Visual
+169. Desain Interior
+170. Desain Produk
+171. Tata Kelola Seni
+172. Film dan Televisi
+173. Film dan Animasi
+174. Musik
+175. Tata Rias
