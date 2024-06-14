@@ -14,12 +14,12 @@ model refresh_session {
 }
 
 model user {
-  ID              String           @id @default(uuid())
+  ID              String          @id @default(uuid())
   name            String
-  email           String           @unique(map: "User_email_key")
+  email           String          @unique(map: "User_email_key")
   password        String
-  learning_path   learning_path    @relation(fields: [Module_Code], references: [ID], onUpdate: Cascade, onDelete: Cascade)
-  Module_Code     Int
+  learning_path   learning_path   @relation(fields: [Module_Code], references: [ID], onUpdate: Cascade, onDelete: Cascade)
+  dule_Code     Int
   career          career           @relation(fields: [goalId], references: [ID],onUpdate: Cascade, onDelete: Cascade)
   goalId          Int
   eatEachDay      Int
