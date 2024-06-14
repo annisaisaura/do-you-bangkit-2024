@@ -1,0 +1,9 @@
+.env
+/node_modules/
+
+/prisma/migrations
+serviceaccountkey.json
+*.pem
+pm-testing.json
+
+Dockerfile

@@ -17,20 +17,18 @@ model user {
   ID              String           @id @default(uuid())
   name            String
   email           String           @unique(map: "User_email_key")
-  password        String            
-  weight          Float
-  food_preference food_preference      @relation(fields: [foodPreferenceId], references: [ID], onUpdate: Cascade, onDelete: Cascade)
-  foodPreferenceId Int
-  goal            Goal                 @relation(fields: [goalId], references: [ID],onUpdate: Cascade, onDelete: Cascade)
+  password        String
+  learning_path   learning_path    @relation(fields: [Module_Code], references: [ID], onUpdate: Cascade, onDelete: Cascade)
+  Module_Code     Int
+  career          career           @relation(fields: [goalId], references: [ID],onUpdate: Cascade, onDelete: Cascade)
   goalId          Int
-  eatEachDay      Int               
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime @updatedAt 
-  age             Int              @default(17)
+  eatEachDay      Int
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
   refresh_session refresh_session?
 }
 
-model recommendation {
+model career_recom {
   ID String @id @default(uuid())
   name String
   foods food[]
@@ -76,13 +74,13 @@ model food_category {
 // }
 
 
-model food_preference{
+model learning_path{
   ID         Int        @id @default(autoincrement())
-  name       String 
+  name       String
   users      user[]
 }
 
-model Goal{
+model career{
   ID         Int  @id @default(autoincrement())
   name       String    
   users      user[]             
