@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model refresh_session {
+  ID     String @id @default(uuid())
+  userId String @unique(map: "Refresh_Session_userId_key")
+  user   user   @relation(fields: [userId], references: [ID], map: "Refresh_Session_userId_fkey")
+}
+
+model user {
+  ID              String           @id @default(uuid())
+  name            String
+  email           String           @unique(map: "User_email_key")
+  password        String            
+  weight          Float
+  food_preference food_preference      @relation(fields: [foodPreferenceId], references: [ID], onUpdate: Cascade, onDelete: Cascade)
+  foodPreferenceId Int
+  goal            Goal                 @relation(fields: [goalId], references: [ID],onUpdate: Cascade, onDelete: Cascade)
+  goalId          Int
+  eatEachDay      Int               
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime @updatedAt 
+  age             Int              @default(17)
+  refresh_session refresh_session?
+}
+
+model recommendation {
+  ID String @id @default(uuid())
+  name String
+  foods food[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model food {
+  ID String @id @default(uuid())
+  name String 
+  recommendation recommendation? @relation(fields: [recommendationId], references: [ID])
+  recommendationId String? 
+  calories Float @default(0)
+  carbohidrate Float @default(0)
+  protein Float @default(0)
+  foodCategory   food_category  @relation(fields: [foodCategoryId], references: [ID])
+  foodCategoryId String        
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model food_category {
+  ID String @id @default(uuid())
+  name String
+  foods food[] 
+}
+
+// model nutrition{
+//   ID String @id @default(uuid())
+//   name String 
+//   foods food_nutrition[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+//
+// model food_nutrition{
+//   food food @relation(fields: [foodId], references: [ID])
+//   foodId String
+//   nutrition nutrition @relation(fields: [nutritionId], references: [ID])
+//   nutritionId String
+//   amount Float
+//   @@id([foodId, nutritionId])
+// }
+
+
+model food_preference{
+  ID         Int        @id @default(autoincrement())
+  name       String 
+  users      user[]
+}
+
+model Goal{
+  ID         Int  @id @default(autoincrement())
+  name       String    
+  users      user[]             
+}
