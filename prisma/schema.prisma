@@ -1,87 +1,91 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model refresh_session {
-  ID     String @id @default(uuid())
-  userId String @unique(map: "Refresh_Session_userId_key")
-  user   user   @relation(fields: [userId], references: [ID], map: "Refresh_Session_userId_fkey")
+generator client {
+  provider = "prisma-client-js"
 }
 
-model user {
-  ID              String          @id @default(uuid())
-  name            String
-  email           String          @unique(map: "User_email_key")
-  password        String
-  learning_path   learning_path   @relation(fields: [Module_Code], references: [ID], onUpdate: Cascade, onDelete: Cascade)
-  dule_Code     Int
-  career          career           @relation(fields: [goalId], references: [ID],onUpdate: Cascade, onDelete: Cascade)
-  goalId          Int
-  eatEachDay      Int
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+model refresh_session {
+  id      String  @id @default(uuid())
+  userId  String  @unique(map: "Refresh_Session_userId_key")
+  user    user    @relation(fields: [userId], references: [id], map: "Refresh_Session_userId_fkey")
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique(map: "User_email_key")
+  password    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userCareer  UserCareer[]
+  userCourse  UserCourse[]
   refresh_session refresh_session?
 }
 
-model career_recom {
-  ID String @id @default(uuid())
-  name String
-  foods food[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model UserCareer {
+  userId          Int
+  bidangId        Int
+  pendidikanId    Int
+  jeniskelaminId  Int
+  skillId         Int
+  roleId          Int
+  user            User          @relation(fields: [userId], references: [id])
+  Bidang          Bidang        @relation(fields: [bidangId], references: [id])
+  Pendidikan      Pendidikan    @relation(fields: [pendidikanId], references: [id])
+  Jenis_Kelamin   JenisKelamin  @relation(fields: [jenisKelaminId], references: [id])
+  Skill           Skill         @relation(fields: [skillId], references: [id])
+  Role            Role          @relation(fields: [roleId], references: [id])
 }
 
-model food {
-  ID String @id @default(uuid())
-  name String 
-  recommendation recommendation? @relation(fields: [recommendationId], references: [ID])
-  recommendationId String? 
-  calories Float @default(0)
-  carbohidrate Float @default(0)
-  protein Float @default(0)
-  foodCategory   food_category  @relation(fields: [foodCategoryId], references: [ID])
-  foodCategoryId String        
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Bidang {
+  id          Int     @id @default(autoincrement())
+  Bidang      String
+  userCareer  UserCareer[]
 }
 
-model food_category {
-  ID String @id @default(uuid())
-  name String
-  foods food[] 
+model Pendidikan {
+  id          Int     @id @default(autoincrement())
+  Pendidikan  String
+  userCareer  UserCareer[]
 }
 
-// model nutrition{
-//   ID String @id @default(uuid())
-//   name String 
-//   foods food_nutrition[]
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-//
-// model food_nutrition{
-//   food food @relation(fields: [foodId], references: [ID])
-//   foodId String
-//   nutrition nutrition @relation(fields: [nutritionId], references: [ID])
-//   nutritionId String
-//   amount Float
-//   @@id([foodId, nutritionId])
-// }
-
-
-model learning_path{
-  ID         Int        @id @default(autoincrement())
-  name       String
-  users      user[]
+model JenisKelamin {
+  id            Int     @id @default(autoincrement())
+  Jenis_Kelamin String
+  userCareer    UserCareer[]
 }
 
-model career{
-  ID         Int  @id @default(autoincrement())
-  name       String    
-  users      user[]             
+model Skill {
+  id          Int     @id @default(autoincrement())
+  Skill       String
+  userCareer  UserCareer[]
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  Role        String
+  userCareer  UserCareer[]
+}
+
+model UserCourse {
+  userId    Int
+  courseId  Int
+  user      User  @relation(fields: [userId], references: [id])
+  Course_Learning_Material  Course  @relation(fields: [courseId], references: [id])
+}
+
+model Course {
+  id      Int @id @default(autoincrement())
+  Course_Learning_Material String
+  Module  Module[]
+}
+
+model Module {
+  id        Int     @id @default(autoincrement())
+  Module    String
+  courseId  Int
+  Course_Learning_Material  Course  @relation(fields: [courseId], references: [id])
 }
