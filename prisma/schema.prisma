@@ -20,24 +20,23 @@ model User {
   password    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  userCareer  UserCareer[]
-  userCourse  UserCourse[]
   refresh_session refresh_session?
 }
 
-model UserCareer {
-  userId          Int
+model UserCareer { // Career Recommendation
+  id              String        @id @default(uuid())
   bidangId        Int
   pendidikanId    Int
   jeniskelaminId  Int
   skillId         Int
   roleId          Int
-  user            User          @relation(fields: [userId], references: [id])
   Bidang          Bidang        @relation(fields: [bidangId], references: [id])
   Pendidikan      Pendidikan    @relation(fields: [pendidikanId], references: [id])
   Jenis_Kelamin   JenisKelamin  @relation(fields: [jenisKelaminId], references: [id])
   Skill           Skill         @relation(fields: [skillId], references: [id])
   Role            Role          @relation(fields: [roleId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Bidang {
@@ -64,17 +63,30 @@ model Skill {
   userCareer  UserCareer[]
 }
 
-model Role {
+model Role { // Output
   id          Int     @id @default(autoincrement())
   Role        String
   userCareer  UserCareer[]
 }
 
-model UserCourse {
-  userId    Int
+model UserCourse { // Course Recommendation
+  id        String  @id @default(uuid())
   courseId  Int
-  user      User  @relation(fields: [userId], references: [id])
+  moduleId  Int
   Course_Learning_Material  Course  @relation(fields: [courseId], references: [id])
+  Module    Module  @relation(fields: [moduleId], references: [id])
+}
+
+model Module { // Output
+  id                Int     @id @default(autoincrement())
+  Module            String
+  courseId          Int
+  courseLevelId     Int
+  difficultyLevelId Int
+  Links             String
+  Course_Learning_Material  Course  @relation(fields: [courseId], references: [id])
+  Course_Level      CourseLevel     @relation(fields: [courseLevelId], references: [id])
+  Difficulty_Level  DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
 }
 
 model Course {
@@ -83,9 +95,14 @@ model Course {
   Module  Module[]
 }
 
-model Module {
-  id        Int     @id @default(autoincrement())
-  Module    String
-  courseId  Int
-  Course_Learning_Material  Course  @relation(fields: [courseId], references: [id])
+model CourseLevel {
+  id            Int     @id @default(autoincrement())
+  Course_Level  String
+  Module        Module[]
+}
+
+model DifficultyLevel {
+  id                Int     @id @default(autoincrement())
+  Difficulty_Level  String
+  Module            Module[]
 }
