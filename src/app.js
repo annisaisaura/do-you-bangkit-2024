@@ -17,8 +17,6 @@ app.use(UserRouter)
 app.use(requireAuth, revokeAuth, FoodRouter)
 app.use(requireAuth, revokeAuth, MLRouter)
 
-const PORT = 3000
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     const serverUrl = `http://localhost:${PORT}`;
