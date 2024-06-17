@@ -1,121 +1,163 @@
-const { Storage } = require('@google-cloud/storage');
-const axios = require('axios');
-const dotenv = require('dotenv');
 const { prisma } = require('../prisma');
-
-dotenv.config();
-
-const storage = new Storage;
+const axios = require('axios');
+const csv = require('csv-parser');
+const { Storage } = require('@google-cloud/storage');
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const CAREER_MODEL_URL = process.env.CAREER_MODEL_URL;
 const COURSE_MODEL_URL = process.env.COURSE_MODEL_URL;
 
-async function getModelFromUrl(url) {
+const storage = new Storage();
+
+// Function to fetch JSON career model from URL
+async function fetchCareerModel() {
     try {
-        const response = await axios.get(url);
+        const response = await axios.get(CAREER_MODEL_URL);
         return response.data;
     } catch (error) {
-        console.error(`Error fetching model from URL ${url}:`, error);
-        throw new Error('Error fetching model');
+        console.error('Error fetching career model:', error);
+        throw new Error('Error fetching career model');
     }
 }
 
-async function getCareerModelHandler(req, res) {
+// Function to fetch JSON course model from URL
+async function fetchCourseModel() {
     try {
-        const model = await getModelFromUrl(CAREER_MODEL_URL);
+        const response = await axios.get(COURSE_MODEL_URL);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching course model:', error);
+        throw new Error('Error fetching course model');
+    }
+}
+
+// Function to fetch role recommendations from CSV
+async function fetchRoleRecommendations() {
+    try {
+        const bucket = storage.bucket(BUCKET_NAME);
+        const file = bucket.file('role.csv');
+        const stream = file.createReadStream();
+
+        const roleRecommendations = await new Promise((resolve, reject) => {
+            const results = [];
+            stream.pipe(csv())
+                .on('data', (data) => results.push(data))
+                .on('end', () => resolve(results))
+                .on('error', reject);
+        });
+
+        return roleRecommendations;
+    } catch (error) {
+        console.error('Error fetching role recommendations:', error);
+        throw new Error('Error fetching role recommendations');
+    }
+}
+
+// Function to fetch education categories from CSV
+async function fetchEducationCategories() {
+    try {
+        const bucket = storage.bucket(BUCKET_NAME);
+        const file = bucket.file('pendidikan.csv');
+        const stream = file.createReadStream();
+
+        const educationCategories = await new Promise((resolve, reject) => {
+            const results = [];
+            stream.pipe(csv())
+                .on('data', (data) => results.push(data))
+                .on('end', () => resolve(results))
+                .on('error', reject);
+        });
+
+        return educationCategories;
+    } catch (error) {
+        console.error('Error fetching education categories:', error);
+        throw new Error('Error fetching education categories');
+    }
+}
+
+// Function to process user input using career model
+async function processCareerModel(inputData) {
+    try {
+        const careerModel = await fetchCareerModel();
+        // Replace with your actual model processing logic
+        const recommendations = careerModel.predict(inputData);
+        return recommendations;
+    } catch (error) {
+        console.error('Error processing career model:', error);
+        throw new Error('Error processing career model');
+    }
+}
+
+// Function to process user input using course model
+async function processCourseModel(inputData) {
+    try {
+        const courseModel = await fetchCourseModel();
+        // Replace with your actual model processing logic
+        const recommendations = courseModel.predict(inputData);
+        return recommendations;
+    } catch (error) {
+        console.error('Error processing course model:', error);
+        throw new Error('Error processing course model');
+    }
+}
+
+// Handler to get career recommendations
+async function getCareerRecommendations(req, res) {
+    try {
+        const inputData = req.body;
+        const recommendations = await processCareerModel(inputData);
+
+        // Save recommendations to database using Prisma
+        const savedRecommendations = await prisma.userCareer.createMany({
+            data: recommendations.map(recommendation => ({
+                userId: inputData.userId,
+                bidangId: recommendation.bidangId,
+                pendidikanId: recommendation.pendidikanId,
+                jenisKelamin: inputData.jenisKelamin,
+                skillId: recommendation.skillId,
+                roleId: recommendation.roleId,
+            }))
+        });
+
         res.status(200).json({
             status: 'Success',
-            data: model
+            data: savedRecommendations
         });
     } catch (error) {
+        console.error('Error in getCareerRecommendations:', error);
         res.status(500).json({
             status: 'Failed',
-            message: 'Error fetching career model'
+            message: 'Error processing career recommendations'
         });
     }
 }
 
-async function getCourseModelHandler(req, res) {
+// Handler to get course recommendations
+async function getCourseRecommendations(req, res) {
     try {
-        const model = await getModelFromUrl(COURSE_MODEL_URL);
+        const inputData = req.body;
+        const recommendations = await processCourseModel(inputData);
+
+        // Save recommendations to database using Prisma
+        const savedRecommendations = await prisma.userCourse.createMany({
+            data: recommendations.map(recommendation => ({
+                userId: inputData.userId,
+                courseId: recommendation.courseId,
+                moduleId: recommendation.moduleId,
+            }))
+        });
+
         res.status(200).json({
             status: 'Success',
-            data: model
+            data: savedRecommendations
         });
     } catch (error) {
+        console.error('Error in getCourseRecommendations:', error);
         res.status(500).json({
             status: 'Failed',
-            message: 'Error fetching course model'
+            message: 'Error processing course recommendations'
         });
     }
 }
 
-async function saveCareerRecommendationHandler(req, res) {
-    const { userId, bidangId, pendidikanId, jenisKelamin, skillId, roleId } = req.body;
-
-    if (!userId || !bidangId || !pendidikanId || !jenisKelamin || !skillId || !roleId) {
-        res.status(400).json({
-            status: 'Failed',
-            message: 'Missing required fields'
-        });
-        return;
-    }
-
-    try {
-        const recommendation = await prisma.userCareer.create({
-            data: {
-                userId,
-                bidangId,
-                pendidikanId,
-                jenisKelamin,
-                skillId,
-                roleId
-            }
-        });
-        res.status(201).json({
-            status: 'Success',
-            data: recommendation
-        });
-    } catch (error) {
-        console.error('Error saving career recommendation:', error);
-        res.status(500).json({
-            status: 'Failed',
-            message: 'Error saving career recommendation'
-        });
-    }
-}
-
-async function saveCourseRecommendationHandler(req, res) {
-    const { userId, courseId, moduleId } = req.body;
-
-    if (!userId || !courseId || !moduleId) {
-        res.status(400).json({
-            status: 'Failed',
-            message: 'Missing required fields'
-        });
-        return;
-    }
-
-    try {
-        const recommendation = await prisma.userCourse.create({
-            data: {
-                userId,
-                courseId,
-                moduleId
-            }
-        });
-        res.status(201).json({
-            status: 'Success',
-            data: recommendation
-        });
-    } catch (error) {
-        console.error('Error saving course recommendation:', error);
-        res.status(500).json({
-            status: 'Failed',
-            message: 'Error saving course recommendation'
-        });
-    }
-}
-
-module.exports = {getCareerModelHandler, getCourseModelHandler, saveCareerRecommendationHandler, saveCourseRecommendationHandler};
+module.exports = { getCareerRecommendations, getCourseRecommendations };

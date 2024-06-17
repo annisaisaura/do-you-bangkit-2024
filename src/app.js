@@ -1,7 +1,8 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
-const { requireAuth, revokeAuth } = require('./middleware/AuthMiddleware');
+const authenticateToken = require('./middleware/AuthMiddleware');
 
 const UserRouter = require('./routes/UserRouter');
 const AuthRouter = require('./routes/AuthRouter');
@@ -14,10 +15,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(AuthRouter);
 app.use(UserRouter);
 app.use(ModelRouter);
+
+app.use((req, res, next) => {
+    res.status(404).send({
+        status: 'Failed',
+        message: 'Route not found'
+    });
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
