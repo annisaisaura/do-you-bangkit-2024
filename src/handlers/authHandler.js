@@ -31,8 +31,8 @@ async function loginUserHandler(req, res) {
             token
         });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ status: 'Failed', message: 'Failed to login user' });
+        console.error('Error during login:', error);
+        res.status(500).json({ status: 'Failed', message: 'Failed to login user', error: error.message });
     }
 }
 
