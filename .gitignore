@@ -2,6 +2,7 @@
 /node_modules/
 
 /prisma/migrations
+/src/config
 serviceaccountkey.json
 *.pem
 pm-testing.json

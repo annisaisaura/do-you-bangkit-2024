@@ -1,11 +1,10 @@
-const express = require('express')
-const { registerUserHandler, getSpesificUserHandler, editUserHandler } = require('../handlers/UserHandler');
-const { requireAuth, revokeAuth } = require('../middlewares/AuthMiddleware');
+const express = require('express');
+const { registerUserHandler, profileUserHandler } = require('../handlers/UserHandler');
+const authenticateToken = require('../middleware/AuthMiddleware');
 
-router = express.Router()
+const router = express.Router();
 
-router.post('/user', registerUserHandler)
-router.get('/user/:userId', requireAuth, revokeAuth, getSpesificUserHandler);
-router.put('/user/:userId', requireAuth, revokeAuth, editUserHandler);
+router.post('/register', registerUserHandler);
+router.get('/profile/:userId', authenticateToken, profileUserHandler);
 
-module.exports = router
+module.exports = router;

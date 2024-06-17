@@ -1,24 +1,17 @@
-const express = require('express')
-const { requireAuth, revokeAuth } = require('./middlewares/AuthMiddleware')
+const express = require('express');
+const bodyParser = require('body-parser');
+const UserRouter = require('./routes/UserRouter');
+const AuthRouter = require('./routes/AuthRouter');
+const authenticateToken = require('./middleware/AuthMiddleware');
 
-const app = express()
-// const UserRouter = require('./routes/UserRouter')
-const UserRouter = require('./routes/UserRouter')
-const AuthRouter = require('./routes/AuthRouter')
-const FoodRouter = require('./routes/FoodRouter')
-const MLRouter = require('./routes/MLRouter')
-const cookieParser = require('cookie-parser')
+const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.json())
-app.use(cookieParser())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(UserRouter);
+app.use(AuthRouter);
 
-app.use(AuthRouter)
-app.use(UserRouter)
-app.use(requireAuth, revokeAuth, FoodRouter)
-app.use(requireAuth, revokeAuth, MLRouter)
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    const serverUrl = `http://localhost:${PORT}`;
-    console.log(`Server URL: ${serverUrl}`);
-})
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
