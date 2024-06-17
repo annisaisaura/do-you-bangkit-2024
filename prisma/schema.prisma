@@ -14,7 +14,7 @@ model refresh_session {
 }
 
 model User {
-  id              String           @id @default(uuid())
+  id              String           @id @db.Char(16) @default(nano(16))
   name            String
   email           String           @unique(map: "User_email_key")
   password        String

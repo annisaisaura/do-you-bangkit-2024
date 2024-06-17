@@ -1,8 +1,8 @@
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken } = require('../utils/JWTUtils');
 
-dotenv.config()
+dotenv.config();
 
 function requireAuth(req, res, next) {
     if (!req.headers.authorization) {
@@ -45,4 +45,4 @@ function revokeAuth(req, res, next) {
 }
 
 
-module.exports = { requireAuth, revokeAuth }
+module.exports = { requireAuth, revokeAuth };
