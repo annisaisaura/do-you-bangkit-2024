@@ -2,7 +2,7 @@ const { prisma } = require("../prisma");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const registerUserHandler = async (req, res) => {
+async function registerUserHandler(req, res) {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -45,57 +45,39 @@ const registerUserHandler = async (req, res) => {
     }
 };
 
-const loginUserHandler = async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ status: 'Failed', message: 'Please fill all of the required fields' });
-    }
+async function profileUserHandler(req, res) {
+    const { userId } = req.params;
 
     try {
-        const user = await prisma.user.findUnique({
-            where: { email },
+        const User = await prisma.User.findUnique({
+            where: {
+                ID: userId
+            },
         });
 
-        if (!user) {
-            return res.status(400).json({ status: 'Failed', message: 'Invalid email or password' });
+        if (!User) {
+            return res.status(404).json({
+                status: 'Failed',
+                message: 'User not found'
+            });
         }
-
-        const validPassword = await bcrypt.compare(password, user.password);
-
-        if (!validPassword) {
-            return res.status(400).json({ status: 'Failed', message: 'Invalid email or password' });
-        }
-
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({
             status: 'Success',
-            message: 'User login successful',
-            token: token,
+            message: 'User Information successfully retrieved',
+            data: {
+                ID: User.ID,
+                name: User.name,
+                email: User.email
+            }
         });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ status: 'Failed', message: 'Failed to login user' });
-    }
-};
-
-const logoutUserHandler = async (req, res) => {
-    const { userId } = req.user;
-
-    try {
-        await prisma.refresh_session.delete({
-            where: { userId },
+        console.error('Error', error);
+        res.status(500).json({
+            status: 'Failed', 
+            error: 'Failed to retrieve user information'
         });
-
-        res.status(200).json({
-            status: 'Success',
-            message: 'User logout successful',
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ status: 'Failed', message: 'Failed to logout user' });
     }
-};
+}
 
-module.exports = { registerUsenorHandler, loginUserHandler, logoutUserHandler };
+module.exports = { registerUserHandler, profileUserHandler };
