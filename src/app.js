@@ -5,6 +5,7 @@ const { requireAuth, revokeAuth } = require('./middleware/AuthMiddleware');
 
 const UserRouter = require('./routes/UserRouter');
 const AuthRouter = require('./routes/AuthRouter');
+const ModelRouter = require('./routes/ModelRouter');
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 app.use(AuthRouter);
 app.use(UserRouter);
+app.use(ModelRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

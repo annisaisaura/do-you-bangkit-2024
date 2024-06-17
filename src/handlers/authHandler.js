@@ -1,73 +1,42 @@
 const { prisma } = require("../prisma");
 const bcrypt = require('bcrypt');
-const { generateAccessToken, generateRefreshToken } = require("../utils/JWTUtils");
+const { generateToken } = require('../utils/JWTUtils');
 
 async function loginUserHandler(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({
-            status: 'Failed',
-            message: 'Email or password is not provided'
-        });
+        return res.status(400).json({ status: 'Failed', message: 'Please fill all of the required fields' });
     }
 
     try {
-        const user = await prisma.user.findUnique({
-            where: { email },
+        const user = await prisma.User.findUnique({
+            where: { email }
         });
 
         if (!user) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'User is not found',
-            });
+            return res.status(401).json({ status: 'Failed', message: 'Invalid email or password' });
         }
 
-        const isPasswordSame = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordSame) {
-            return res.status(400).json({
-                status: 'Failed',
-                message: 'Please insert correct credentials'
-            });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ status: 'Failed', message: 'Invalid email or password' });
         }
 
-        const token = generateAccessToken(user.id, user.email);
-        const refreshToken = generateRefreshToken(user.id, user.email);
-
-        const userData = {
-            email: user.email,
-            name: user.name
-        };
-
-        res.cookie('access_token', token, { maxAge: 30000, httpOnly: true });
-        res.cookie('refresh_token', refreshToken, { maxAge: 600000, httpOnly: true });
-
-        return res.status(200).json({
+        const token = generateToken({ userId: user.id });
+        res.status(200).json({
             status: 'Success',
-            data: {
-                user: userData,
-                token,
-                refreshToken
-            }
+            message: 'User login successful',
+            token
         });
     } catch (error) {
         console.error('Error:', error);
-        return res.status(500).json({
-            status: 'Failed',
-            message: 'An error occurred while processing your request'
-        });
+        res.status(500).json({ status: 'Failed', message: 'Failed to login user' });
     }
 }
 
 async function logoutUserHandler(req, res) {
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    return res.status(200).json({
-        status: 'Success',
-        message: 'Logout successful'
-    });
+    res.status(200).json({ status: 'Success', message: 'User logout successful' });
 }
 
 module.exports = { loginUserHandler, logoutUserHandler };

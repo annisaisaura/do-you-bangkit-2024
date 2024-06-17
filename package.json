@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/annisaisaura/do-you-bangkit-2024#readme",
   "dependencies": {
+    "@google-cloud/storage": "^7.11.2",
     "@prisma/client": "^5.15.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
