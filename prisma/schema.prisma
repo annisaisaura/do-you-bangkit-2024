@@ -1,116 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DB_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model RefreshSession {
-  id      String  @id @default(uuid())
-  userId  String  @unique(map: "Refresh_Session_userId_key")
-  user    User    @relation(fields: [userId], references: [id], map: "Refresh_Session_userId_fkey")
+  id     String @id @default(uuid())
+  userId String @unique(map: "Refresh_Session_userId_key")
+  user   User   @relation(fields: [userId], references: [id], map: "Refresh_Session_userId_fkey")
 }
 
 model User {
-  id              String            @id @default(uuid())
-  name            String
-  email           String            @unique(map: "User_email_key")
-  password        String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  refreshSession  RefreshSession?
-  userCareer      UserCareer[]
-  userCourse      UserCourse[]
-}
-
-enum JenisKelamin {
-  Pria
-  Perempuan
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  refreshSession RefreshSession?
+  userCareer     UserCareer[]
+  userCourse     UserCourse[]
 }
 
 model UserCareer {
-  id            String        @id @default(uuid())
-  userId        String?
-  bidangId      Int
-  pendidikanId  Int
-  jenisKelamin  JenisKelamin
-  skillId       Int
-  roleId        Int
-  user          User?         @relation(fields: [userId], references: [id])
-  bidang        Bidang        @relation(fields: [bidangId], references: [id])
-  pendidikan    Pendidikan    @relation(fields: [pendidikanId], references: [id])
-  skill         Skill         @relation(fields: [skillId], references: [id])
-  role          Role          @relation(fields: [roleId], references: [id])
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-}
+  id           String       @id @default(uuid())
+  userId       String?
+  jenisKelamin JenisKelamin
+  roleId       Int?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  bidang       String
+  pendidikan   String
+  skill        String
+  role         Role?        @relation(fields: [roleId], references: [id])
+  user         User?        @relation(fields: [userId], references: [id])
 
-model Bidang {
-  id          Int           @id @default(autoincrement())
-  bidang      String
-  userCareer  UserCareer[]
-}
-
-model Pendidikan {
-  id          Int           @id @default(autoincrement())
-  pendidikan  String
-  userCareer  UserCareer[]
-}
-
-model Skill {
-  id          Int           @id @default(autoincrement())
-  skill       String
-  userCareer  UserCareer[]
+  @@index([roleId], map: "UserCareer_roleId_fkey")
+  @@index([userId], map: "UserCareer_userId_fkey")
 }
 
 model Role {
-  id          Int           @id @default(autoincrement())
-  role        String
-  userCareer  UserCareer[]
+  id         Int          @id @default(autoincrement())
+  role       String
+  userCareer UserCareer[]
 }
 
 model UserCourse {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String?
   courseId  Int
   moduleId  Int
-  user      User?     @relation(fields: [userId], references: [id])
-  course    Course    @relation(fields: [courseId], references: [id])
-  module    Module    @relation(fields: [moduleId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id])
+  module    Module   @relation(fields: [moduleId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
 
-model Module {
-  id                Int             @id @default(autoincrement())
-  module            String
-  courseId          Int
-  courseLevelId     Int
-  difficultyLevelId Int
-  link              String
-  course            Course          @relation(fields: [courseId], references: [id])
-  courseLevel       CourseLevel     @relation(fields: [courseLevelId], references: [id])
-  difficultyLevel   DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
-  userCourse        UserCourse[]
+  @@index([courseId], map: "UserCourse_courseId_fkey")
+  @@index([moduleId], map: "UserCourse_moduleId_fkey")
+  @@index([userId], map: "UserCourse_userId_fkey")
 }
 
 model Course {
-  id          Int           @id @default(autoincrement())
-  course      String
-  module      Module[]
-  userCourse  UserCourse[]
+  id            Int          @id @default(autoincrement())
+  course        String
+  courseLevelId Int
+  courseLevel   CourseLevel  @relation(fields: [courseLevelId], references: [id])
+  userCourse    UserCourse[]
+
+  @@index([courseLevelId], map: "Course_courseLevelId_fkey")
 }
 
 model CourseLevel {
   id          Int      @id @default(autoincrement())
   courseLevel String
-  module      Module[]
+  course      Course[]
+}
+
+model Module {
+  id                Int             @id @default(autoincrement())
+  module            String
+  difficultyLevelId Int
+  link              String
+  difficultyLevel   DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
+  userCourse        UserCourse[]
+
+  @@index([difficultyLevelId], map: "Module_difficultyLevelId_fkey")
 }
 
 model DifficultyLevel {
   id              Int      @id @default(autoincrement())
   difficultyLevel String
   module          Module[]
+}
+
+enum JenisKelamin {
+  Pria
+  Perempuan
 }

@@ -1,8 +1,13 @@
-.env
 /node_modules/
+.env
 
-/prisma/migrations
-/src/config
+/prisma/migrations/
+/prisma/data/
+/prisma/seed.js
+
 serviceaccountkey.json
 *.pem
 pm-testing.json
+
+.dockerignore
+Dockerfile
