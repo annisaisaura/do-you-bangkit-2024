@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const authenticateToken = require('./middleware/AuthMiddleware');
 
 const UserRouter = require('./routes/UserRouter');
@@ -18,9 +18,9 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(AuthRouter);
-app.use(UserRouter);
-app.use(ModelRouter);
+app.use('/auth', AuthRouter);
+app.use('/users', UserRouter);
+app.use('/models', authenticateToken, ModelRouter);
 
 app.use((req, res, next) => {
     res.status(404).send({
@@ -41,4 +41,4 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     const serverUrl = `http://localhost:${PORT}`;
     console.log(`Server URL: ${serverUrl}`);
-})
+});
