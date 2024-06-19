@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const loadModel = require('../models/loadModel');
+const loadModel = require('../utils/loadModel');
 const prisma = new PrismaClient();
 
 async function mapInputColumns(inputData) {
