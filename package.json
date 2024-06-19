@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "main": "src/index.js",
   "scripts": {
     "start": "node ./src/app.js",
     "start:dev": "nodemon src/app.js",
@@ -21,11 +20,11 @@
   },
   "homepage": "https://github.com/annisaisaura/do-you-bangkit-2024#readme",
   "dependencies": {
+    "@google-cloud/storage": "^7.11.2",
     "@prisma/client": "^5.15.0",
+    "@tensorflow/tfjs": "^4.20.0",
+    "@tensorflow/tfjs-node": "3.18.0",
     "axios": "^1.7.2",
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",

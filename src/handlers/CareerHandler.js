@@ -1,83 +1,136 @@
-require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
-const axios = require('axios');
+const loadModel = require('../models/loadModel');
 const prisma = new PrismaClient();
 
-async function getRoleFromModel(bidang, pendidikan, skill, jenisKelamin) {
-    try {
-        const response = await axios.get(process.env.MODEL_CAREER_URL);
-        const modelData = response.data;
-        const role = modelData.role;
+async function mapInputColumns(inputData) {
+    return {
+        'Jenis_Kelamin': inputData['jenisKelamin'],
+        'Bidang': inputData['bidang'],
+        'Pendidikan': inputData['pendidikan'],
+        'Skill': inputData['skill']
+    };
+}
 
-        return role;
+async function mapModelColumns(inputData) {
+    return {
+        'jenisKelamin': inputData['Jenis_Kelamin'],
+        'bidang': inputData['Bidang'],
+        'pendidikan': inputData['Pendidikan'],
+        'skill': inputData['Skill']
+    };
+}
+
+async function predictRole(inputData) {
+    try {
+        const model = await loadModel();
+        const mappedInput = await mapModelColumns(inputData);
+        const prediction = model.predict(mappedInput);
+        const result = prediction.dataSync();
+        return result;
     } catch (error) {
-        console.error('Error fetching model data:', error);
-        throw new Error('Failed to fetch model data');
+        throw new Error('Failed to make prediction');
+    }
+}
+
+async function checkRole(role) {
+    try {
+        const existingRole = await prisma.Role.findFirst({
+            where: {
+                role: role
+            }
+        });
+
+        if (existingRole) {
+            return existingRole.id;
+        } else {
+            const newRole = await prisma.Role.create({
+                data: {
+                    role: role
+                }
+            });
+            return newRole.id;
+        }
+    } catch (error) {
+        throw new Error('Failed to check or create role');
     }
 }
 
 async function createUserCareerHandler(req, res) {
-    const { userId } = req.user;
-    const { bidang, pendidikan, skill, jenisKelamin } = req.body;
-
-    if (!bidang || !pendidikan || !jenisKelamin || !skill) {
-        return res.status(400).json({ status: 'Failed', message: 'Please fill all of the required fields' });
-    }
+    const inputData = req.body;
 
     try {
-        const newBidang = await prisma.Bidang.create({ data: { bidang } });
-        const newPendidikan = await prisma.Pendidikan.create({ data: { pendidikan } });
-        const newSkill = await prisma.Skill.create({ data: { skill } });
+        const mappedInput = await mapInputColumns(inputData);
+        const predictedRole = await predictRole(mappedInput);
+        const roleId = await checkRole(predictedRole);
+        const userId = req.user.id;
 
-        const role = await getRoleFromModel(bidang, pendidikan, skill, jenisKelamin);
-
-        const userCareer = await prisma.UserCareer.create({
+        const newUserCareer = await prisma.UserCareer.create({
             data: {
-                userId,
-                bidangId: newBidang.id,
-                pendidikanId: newPendidikan.id,
-                skillId: newSkill.id,
-                jenisKelamin,
-                role
+                userId: userId,
+                jenisKelamin: mappedInput['Jenis_Kelamin'],
+                bidang: mappedInput['Bidang'],
+                pendidikan: mappedInput['Pendidikan'],
+                skill: mappedInput['Skill'],
+                roleId: roleId
             }
         });
 
         res.status(201).json({
             status: 'Success',
-            message: 'UserCareer created successfully',
-            data: userCareer
+            message: 'User career data created successfully',
+            data: {
+                id: newUserCareer.id,
+                userId: newUserCareer.userId,
+                jenisKelamin: newUserCareer.jenisKelamin,
+                bidang: newUserCareer.bidang,
+                pendidikan: newUserCareer.pendidikan,
+                skill: newUserCareer.skill,
+                roleId: newUserCareer.roleId
+            }
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'Failed', message: 'Failed to create UserCareer' });
+        res.status(500).json({
+            status: 'Failed',
+            message: 'Failed to create user career data'
+        });
     }
 }
 
 async function getUserCareerHandler(req, res) {
-    const { id } = req.params;
-    const { userId } = req.user;
+    const { userCareerId } = req.params;
 
     try {
         const userCareer = await prisma.UserCareer.findUnique({
-            where: { id: parseInt(id, 10) },
-            include: {
-                bidang: true,
-                pendidikan: true,
-                skill: true
-            }
+            where: { id: userCareerId },
         });
 
-        if (!userCareer || userCareer.userId !== userId) {
-            return res.status(404).json({ status: 'Failed', message: 'UserCareer not found' });
+        if (!userCareer) {
+            return res.status(404).json({
+                status: 'Failed',
+                message: 'User career not found',
+            });
         }
 
         res.status(200).json({
             status: 'Success',
-            data: userCareer
+            message: 'User career information successfully retrieved',
+            data: {
+                id: userCareer.id,
+                userId: userCareer.userId,
+                jenisKelamin: userCareer.jenisKelamin,
+                bidang: userCareer.bidang,
+                pendidikan: userCareer.pendidikan,
+                skill: userCareer.skill,
+                roleId: userCareer.roleId,
+            },
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 'Failed', message: 'Failed to fetch UserCareer' });
+        res.status(500).json({
+            status: 'Failed',
+            message: 'Failed to retrieve user career information',
+        });
     }
 }
 
