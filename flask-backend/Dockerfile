@@ -1,9 +1,10 @@
-FROM node:20
-WORKDIR /usr/src/app
+# Flask Backend Dockerfile
+FROM python:3.9-slim
 
-COPY package*.json ./
+WORKDIR /app
 
-RUN npm install
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
@@ -22,4 +23,4 @@ RUN npx prisma generate
 
 EXPOSE 8080
 
-CMD ["npm", "run", "start"]
+CMD ["python", "app.py"]
