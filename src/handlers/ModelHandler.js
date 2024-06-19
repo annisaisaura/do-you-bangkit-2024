@@ -1,5 +1,5 @@
 const { prisma } = require('../prisma');
-const tf = require('@tensorflow/tfjs-node');
+const tf = require('@tensorflow/tfjs-tflite');
 const { loadModels, getCareerModel, getCourseModel } = require('../utils/loadModel');
 
 // Pastikan model dimuat ketika aplikasi mulai
