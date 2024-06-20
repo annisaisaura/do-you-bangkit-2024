@@ -76,38 +76,4 @@ async function profileUserHandler(req, res) {
     }
 }
 
-// async function editUserHandler(req, res) {
-//     const { password } = req.body;
-//     const { userId } = req.params;
-
-//     if (!password) {
-//         return res.status(400).json({ status: 'Failed', message: 'Please provide a new password' });
-//     }
-
-//     try {
-//         const salt = await bcrypt.genSalt(10);
-//         const hashedPassword = await bcrypt.hash(password, salt);
-
-//         const updatedUser = await prisma.User.update({
-//             where: { id: userId },
-//             data: { password: hashedPassword }
-//         });
-
-//         res.status(200).json({
-//             status: 'Success',
-//             message: 'User password has been successfully changed',
-//             data: {
-//                 id: updatedUser.id,
-//                 email: updatedUser.email
-//             }
-//         });
-//     } catch (error) {
-//         if (error.code === 'P2025') {
-//             return res.status(404).json({ status: 'Failed', message: 'User not found' });
-//         }
-//         console.error('Error:', error);
-//         res.status(500).json({ status: 'Failed', message: 'Failed to edit user information' });
-//     }
-// }
-
 module.exports = { registerUserHandler, profileUserHandler };
