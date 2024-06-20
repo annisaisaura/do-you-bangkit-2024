@@ -19,6 +19,7 @@ ENV COURSE_MODEL_URL=https://storage.googleapis.com/ml_do-you/learning_path_mode
 
 ENV DB_URL=mysql://anggun:sayangzayne@34.101.149.195:3306/do-you-db?schema=public
 
+RUN apt-get update && apt-get install -y npm
 RUN npx prisma generate
 
 EXPOSE 8080

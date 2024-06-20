@@ -1,10 +1,10 @@
 const express = require('express');
 const { registerUserHandler, profileUserHandler } = require('../handlers/UserHandler');
-const authenticateToken = require('../middleware/AuthMiddleware');
+const { requireAuth } = require('../middleware/AuthMiddleware');
 
 const router = express.Router();
 
 router.post('/register', registerUserHandler);
-router.get('/profile/:userId', authenticateToken, profileUserHandler);
+router.get('/profile/:userId', requireAuth, profileUserHandler);
 
 module.exports = router;

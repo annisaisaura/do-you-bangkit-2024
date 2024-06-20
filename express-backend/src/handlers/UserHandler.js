@@ -22,7 +22,7 @@ async function registerUserHandler(req, res) {
 
         res.status(201).json({
             status: 'Success',
-            message: 'User register successful',
+            message: 'User registration successful',
             data: {
                 id: user.id,
                 name: user.name,
