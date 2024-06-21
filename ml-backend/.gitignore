@@ -1,0 +1,6 @@
+__pychache__/
+venv/
+.env
+
+.dockerignore
+Dockerfile

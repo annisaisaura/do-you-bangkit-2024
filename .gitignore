@@ -11,3 +11,6 @@ pm-testing.json
 
 .dockerignore
 Dockerfile
+
+/ml-backend/.dockerignore
+/ml-backend/Dockerfile
